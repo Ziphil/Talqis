@@ -24,9 +24,9 @@ export class NewHairianDate extends CustomDate {
     this.shiftedData = shiftedData;
   }
 
-  public static from(rawDate: Date): NewHairianDate {
-    let calcDate = function (shift: boolean): DateData {
-      let modifiedDate = (shift) ? new Date(rawDate.getTime() - 6 * 60 * 60 * 1000) : rawDate;
+  public static fromTime(time: number): NewHairianDate {
+    let calcData = function (shift: boolean): DateData {
+      let modifiedDate = (shift) ? new Date(time - 6 * 60 * 60 * 1000) : new Date(time);
       let dayCount = FloorMath.div(modifiedDate.getTime() - EPOCH_DATE.getTime(), 24 * 60 * 60 * 1000) + 547863;
       let secondCount = Math.floor((modifiedDate.getTime() - DateUtils.getBasis(modifiedDate).getTime()) * 100000 / 86400) + ((shift) ? 25000000 : 0);
       let rawYear = FloorMath.div(dayCount * 4 + 3 + FloorMath.div((FloorMath.div((dayCount + 1) * 4, 146097) * 3 + 1) * 4, 4), 1461);
@@ -42,15 +42,9 @@ export class NewHairianDate extends CustomDate {
       let data = {year, month, day, hairia, hours, minutes, seconds, milliseconds};
       return data;
     };
-    let unshiftedData = calcDate(false);
-    let shiftedData = calcDate(true);
+    let unshiftedData = calcData(false);
+    let shiftedData = calcData(true);
     let date = new NewHairianDate(unshiftedData, shiftedData);
-    return date;
-  }
-
-  public static current(): NewHairianDate {
-    let rawDate = new Date();
-    let date = NewHairianDate.from(rawDate);
     return date;
   }
 

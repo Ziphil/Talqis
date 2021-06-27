@@ -3,6 +3,18 @@
 
 export abstract class CustomDate {
 
+  public static fromRaw<D extends CustomDate>(this: FromTime<D>, rawDate: Date): D {
+    let time = rawDate.getTime();
+    let date = this.fromTime(time);
+    return date;
+  }
+
+  public static current<D extends CustomDate>(this: FromTime<D>): D {
+    let time = new Date().getTime();
+    let date = this.fromTime(time);
+    return date;
+  }
+
   public abstract getYear(shift?: boolean): number;
 
   public abstract getMonth(shift?: boolean): number;
@@ -20,16 +32,8 @@ export abstract class CustomDate {
   public abstract getMilliseconds(shift?: boolean): number;
 
   public getTuple(shift?: boolean): DateTuple {
-    let tuple = [
-      this.getYear(shift),
-      this.getMonth(shift),
-      this.getDate(shift),
-      this.getHairia(shift),
-      this.getHours(shift),
-      this.getMinutes(shift),
-      this.getSeconds(shift),
-      this.getMilliseconds(shift)
-    ] as DateTuple;
+    let methodNames = ["getYear", "getMonth", "getDate", "getHairia", "getHours", "getMinutes", "getSeconds", "getMilliseconds"] as const;
+    let tuple = methodNames.map((methodName) => this[methodName](shift)) as DateTuple;
     return tuple;
   }
 
@@ -37,6 +41,8 @@ export abstract class CustomDate {
 
 
 export const EPOCH_DATE = new Date(2012, 0, 23, 0, 0, 0);
+
+export type FromTime<D extends CustomDate> = {fromTime: (time: number) => D};
 
 export type DateData = {year: number, month: number, day: number, hairia: number, hours: number, minutes: number, seconds: number, milliseconds: number};
 export type DateTuple = [year: number, month: number, day: number, hairia: number, hours: number, minutes: number, seconds: number, milliseconds: number];
