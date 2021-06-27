@@ -28,7 +28,7 @@ export class NewHairianDate extends CustomDate {
     let calcData = function (shift: boolean): DateData {
       let modifiedDate = (shift) ? new Date(time - 6 * 60 * 60 * 1000) : new Date(time);
       let dayCount = FloorMath.div(modifiedDate.getTime() - EPOCH_DATE.getTime(), 24 * 60 * 60 * 1000) + 547863;
-      let secondCount = Math.floor((modifiedDate.getTime() - DateUtils.getBasis(modifiedDate).getTime()) * 100000 / 86400) + ((shift) ? 25000000 : 0);
+      let secondCount = Math.floor((modifiedDate.getTime() - DateUtils.getBasis(modifiedDate).getTime()) * 1000 / 864) + ((shift) ? 25000000 : 0);
       let rawYear = FloorMath.div(dayCount * 4 + 3 + FloorMath.div((FloorMath.div((dayCount + 1) * 4, 146097) * 3 + 1) * 4, 4), 1461);
       let rawDay = dayCount - (rawYear * 365 + FloorMath.div(rawYear, 4) - FloorMath.div(rawYear, 100) + FloorMath.div(rawYear, 400));
       let year = rawYear - 1500 + 1;
@@ -46,6 +46,13 @@ export class NewHairianDate extends CustomDate {
     let shiftedData = calcData(true);
     let date = new NewHairianDate(unshiftedData, shiftedData);
     return date;
+  }
+
+  public override toTime(): number {
+    let timeOfDay = EPOCH_DATE.getTime() + (this.unshiftedData.hairia - 1) * 86400000;
+    let timeInDay = (this.unshiftedData.hours * 10000000 + this.unshiftedData.minutes * 100000 + this.unshiftedData.seconds * 1000 + this.unshiftedData.milliseconds) * 864 / 1000;
+    let time = timeOfDay + timeInDay;
+    return time;
   }
 
   public override getYear(shift?: boolean): number {

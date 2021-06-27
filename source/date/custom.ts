@@ -21,6 +21,14 @@ export abstract class CustomDate {
     return date;
   }
 
+  public convert<D extends CustomDate>(clazz: FromTime<D>): D {
+    let time = this.toTime();
+    let date = clazz.fromTime(time);
+    return date;
+  }
+
+  public abstract toTime(): number;
+
   public abstract getYear(shift?: boolean): number;
 
   public abstract getMonth(shift?: boolean): number;
