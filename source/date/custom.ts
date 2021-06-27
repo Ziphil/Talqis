@@ -9,6 +9,12 @@ export abstract class CustomDate {
     return date;
   }
 
+  public static fromHairia<D extends CustomDate>(this: FromTime<D>, hairia: number, timeInDay: number): D {
+    let time = EPOCH_DATE.getTime() + (hairia - 1) * 86400000 + timeInDay;
+    let date = this.fromTime(time);
+    return date;
+  }
+
   public static current<D extends CustomDate>(this: FromTime<D>): D {
     let time = new Date().getTime();
     let date = this.fromTime(time);
