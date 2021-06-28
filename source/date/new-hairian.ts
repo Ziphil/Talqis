@@ -26,10 +26,10 @@ export class NewHairianDate extends CustomDate {
 
   public static fromTime(time: number): NewHairianDate {
     let calcData = function (shift: boolean): DateData {
-      let modifiedDate = (shift) ? new Date(time - 6 * 60 * 60 * 1000) : new Date(time);
+      let modifiedDate = (shift) ? new Date(time - 6 * 3600000) : new Date(time);
       let dayCount = FloorMath.div(modifiedDate.getTime() - EPOCH_DATE.getTime(), 24 * 60 * 60 * 1000) + 547863;
       let secondCount = Math.floor((modifiedDate.getTime() - DateUtils.getBasis(modifiedDate).getTime()) * 1000 / 864) + ((shift) ? 25000000 : 0);
-      let rawYear = FloorMath.div(dayCount * 4 + 3 + FloorMath.div((FloorMath.div((dayCount + 1) * 4, 146097) * 3 + 1) * 4, 4), 1461);
+      let rawYear = FloorMath.div(dayCount * 4 + FloorMath.div((FloorMath.div((dayCount + 1) * 4, 146097) + 1) * 3, 4) * 4 + 3, 1461);
       let rawDay = dayCount - (rawYear * 365 + FloorMath.div(rawYear, 4) - FloorMath.div(rawYear, 100) + FloorMath.div(rawYear, 400));
       let year = rawYear - 1500 + 1;
       let month = FloorMath.div(rawDay, 33) + 1;
@@ -55,36 +55,40 @@ export class NewHairianDate extends CustomDate {
     return time;
   }
 
+  private getModifiedData(shift?: boolean): DateData {
+    return (shift) ? this.shiftedData : this.unshiftedData;
+  }
+
   public override getYear(shift?: boolean): number {
-    return ((shift) ? this.shiftedData : this.unshiftedData).year;
+    return this.getModifiedData(shift).year;
   }
 
   public override getMonth(shift?: boolean): number {
-    return ((shift) ? this.shiftedData : this.unshiftedData).month;
+    return this.getModifiedData(shift).month;
   }
 
   public override getDate(shift?: boolean): number {
-    return ((shift) ? this.shiftedData : this.unshiftedData).day;
+    return this.getModifiedData(shift).day;
   }
 
   public override getHairia(shift?: boolean): number {
-    return ((shift) ? this.shiftedData : this.unshiftedData).hairia;
+    return this.getModifiedData(shift).hairia;
   }
 
   public override getHours(shift?: boolean): number {
-    return ((shift) ? this.shiftedData : this.unshiftedData).hours;
+    return this.getModifiedData(shift).hours;
   }
 
   public override getMinutes(shift?: boolean): number {
-    return ((shift) ? this.shiftedData : this.unshiftedData).minutes;
+    return this.getModifiedData(shift).minutes;
   }
 
   public override getSeconds(shift?: boolean): number {
-    return ((shift) ? this.shiftedData : this.unshiftedData).seconds;
+    return this.getModifiedData(shift).seconds;
   }
 
   public override getMilliseconds(shift?: boolean): number {
-    return ((shift) ? this.shiftedData : this.unshiftedData).milliseconds;
+    return this.getModifiedData(shift).milliseconds;
   }
 
 }
