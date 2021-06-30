@@ -99,7 +99,7 @@ describe("from raw date object", () => {
   });
 });
 
-describe("specified by date", () => {
+describe("specified by date component values", () => {
   let check = function (clazz: CustomDateStatic, tuple: Repeat<number, 7>, testTuple: DateTuple, shift?: boolean) {
     let testDate = clazz.of(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4], tuple[5], tuple[6]);
     expect(testDate.getTuple(shift)).toEqual(testTuple);
