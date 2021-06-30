@@ -11,7 +11,7 @@
 ## Overview
 A library for converting Gregorian and Hairian calendars to each other.
 
-グレゴリオ暦とハイリア歴を相互に変換するライブラリです。
+グレゴリオ暦とハイリア暦を相互に変換するライブラリです。
 
 ## Installation
 Install via [npm](https://www.npmjs.com/package/talqis).
