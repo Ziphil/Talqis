@@ -52,8 +52,8 @@ export class NewHairianDate extends CustomDate {
 
   public static fromTime(time: number): NewHairianDate {
     let rawDate = new Date(time);
-    let hairia = FloorMath.div(rawDate.getTime() - EPOCH_DATE.getTime(), 86400000) + 1;
-    let millisecondCount = Math.floor((rawDate.getTime() - DateUtils.getBasis(rawDate).getTime()) * 1000 / 864);
+    let hairia = FloorMath.div(DateUtils.difference(rawDate, EPOCH_DATE), 86400000) + 1;
+    let millisecondCount = Math.floor(DateUtils.difference(rawDate, DateUtils.getBasis(rawDate)) * 1000 / 864);
     let date = NewHairianDate.create(hairia, millisecondCount);
     return date;
   }

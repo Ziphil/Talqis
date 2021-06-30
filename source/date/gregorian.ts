@@ -1,6 +1,9 @@
 //
 
 import {
+  DateUtils
+} from "../util/date";
+import {
   FloorMath
 } from "../util/floor-math";
 import {
@@ -65,7 +68,7 @@ export class GregorianDate extends CustomDate {
   }
 
   public override getHairia(shift?: boolean): number {
-    return FloorMath.div(this.getModifiedDate(shift).getTime() - EPOCH_DATE.getTime(), 86400000) + 1;
+    return FloorMath.div(DateUtils.difference(this.getModifiedDate(shift), EPOCH_DATE), 86400000) + 1;
   }
 
   public override getHours(shift?: boolean): number {
