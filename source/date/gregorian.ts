@@ -29,6 +29,20 @@ export class GregorianDate extends CustomDate {
     return time;
   }
 
+  public static of(year: number, month: number, day: number, hours: number = 0, minutes: number = 0, seconds: number = 0, milliseconds: number = 0): GregorianDate {
+    let rawDate = new Date(year, month - 1, day, hours, minutes, seconds, milliseconds);
+    let date = new GregorianDate(rawDate);
+    return date;
+  }
+
+  public static ofHairia(hairia: number, hours: number = 0, minutes: number = 0, seconds: number = 0, milliseconds: number = 0): GregorianDate {
+    let timeOfDay = EPOCH_DATE.getTime() + (hairia - 1) * 86400000;
+    let timeInDay = hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
+    let time = timeOfDay + timeInDay;
+    let date = GregorianDate.fromTime(time);
+    return date;
+  }
+
   private getModifiedDate(shift?: boolean): Date {
     return (shift) ? new Date(this.rawDate.getTime() - 6 * 3600000) : this.rawDate;
   }

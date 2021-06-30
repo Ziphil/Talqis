@@ -27,7 +27,7 @@ export class NewHairianDate extends CustomDate {
   public static fromTime(time: number): NewHairianDate {
     let calcData = function (shift: boolean): DateData {
       let modifiedDate = (shift) ? new Date(time - 6 * 3600000) : new Date(time);
-      let dayCount = FloorMath.div(modifiedDate.getTime() - EPOCH_DATE.getTime(), 24 * 60 * 60 * 1000) + 547863;
+      let dayCount = FloorMath.div(modifiedDate.getTime() - EPOCH_DATE.getTime(), 86400000) + 547863;
       let secondCount = Math.floor((modifiedDate.getTime() - DateUtils.getBasis(modifiedDate).getTime()) * 1000 / 864) + ((shift) ? 25000000 : 0);
       let rawYear = FloorMath.div(dayCount * 4 + FloorMath.div((FloorMath.div((dayCount + 1) * 4, 146097) + 1) * 3, 4) * 4 + 3, 1461);
       let rawDay = dayCount - (rawYear * 365 + FloorMath.div(rawYear, 4) - FloorMath.div(rawYear, 100) + FloorMath.div(rawYear, 400));
@@ -53,6 +53,21 @@ export class NewHairianDate extends CustomDate {
     let timeInDay = (this.unshiftedData.hours * 10000000 + this.unshiftedData.minutes * 100000 + this.unshiftedData.seconds * 1000 + this.unshiftedData.milliseconds) * 864 / 1000;
     let time = timeOfDay + timeInDay;
     return time;
+  }
+
+  public static of(year: number, month: number, day: number, hours: number = 0, minutes: number = 0, seconds: number = 0, milliseconds: number = 0): NewHairianDate {
+    let addedYear = year + 1500;
+    let hairia = (addedYear - 1) * 365 + FloorMath.div(addedYear - 1, 4) - FloorMath.div(addedYear - 1, 100) + FloorMath.div(addedYear - 1, 400) + (month - 1) * 33 + day - 547863;
+    let date = NewHairianDate.ofHairia(hairia, hours, minutes, seconds, milliseconds);
+    return date;
+  }
+
+  public static ofHairia(hairia: number, hours: number = 0, minutes: number = 0, seconds: number = 0, milliseconds: number = 0): NewHairianDate {
+    let timeOfDay = EPOCH_DATE.getTime() + (hairia - 1) * 86400000;
+    let timeInDay = (hours * 10000000 + minutes * 100000 + seconds * 1000 + milliseconds) * 864 / 1000;
+    let time = timeOfDay + timeInDay;
+    let date = NewHairianDate.fromTime(time);
+    return date;
   }
 
   private getModifiedData(shift?: boolean): DateData {
