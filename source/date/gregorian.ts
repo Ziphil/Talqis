@@ -4,11 +4,16 @@ import {
   FloorMath
 } from "../util/floor-math";
 import {
+  staticImplements
+} from "../util/static-implements";
+import {
   CustomDate,
+  CustomDateStatic,
   EPOCH_DATE
 } from "./custom";
 
 
+@staticImplements<CustomDateStatic<GregorianDate>>()
 export class GregorianDate extends CustomDate {
 
   private readonly rawDate: Date;
@@ -29,15 +34,15 @@ export class GregorianDate extends CustomDate {
     return time;
   }
 
-  public static of(year: number, month: number, day: number, hours: number = 0, minutes: number = 0, seconds: number = 0, milliseconds: number = 0): GregorianDate {
+  public static of(year: number, month: number, day: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): GregorianDate {
     let rawDate = new Date(year, month - 1, day, hours, minutes, seconds, milliseconds);
     let date = new GregorianDate(rawDate);
     return date;
   }
 
-  public static ofHairia(hairia: number, hours: number = 0, minutes: number = 0, seconds: number = 0, milliseconds: number = 0): GregorianDate {
+  public static ofHairia(hairia: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): GregorianDate {
     let timeOfDay = EPOCH_DATE.getTime() + (hairia - 1) * 86400000;
-    let timeInDay = hours * 3600000 + minutes * 60000 + seconds * 1000 + milliseconds;
+    let timeInDay = (hours ?? 0) * 3600000 + (minutes ?? 0) * 60000 + (seconds ?? 0) * 1000 + (milliseconds ?? 0);
     let time = timeOfDay + timeInDay;
     let date = GregorianDate.fromTime(time);
     return date;

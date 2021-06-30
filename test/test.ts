@@ -1,16 +1,17 @@
 //
 
 import {
-  CustomDate,
-  DateTuple,
-  DateTupleWithoutHairia,
+  Repeat
+} from "typescript-tuple";
+import {
+  CustomDateStatic,
   GregorianDate,
   NewHairianDate
 } from "../source";
 
 
 describe("from raw date", () => {
-  let check = function (clazz: {fromRaw: (rawDate: Date) => CustomDate}, rawTuple: DateTupleWithoutHairia, testTuple: DateTuple, shift?: boolean) {
+  let check = function (clazz: CustomDateStatic, rawTuple: Repeat<number, 7>, testTuple: Repeat<number, 8>, shift?: boolean) {
     let rawDate = new Date(rawTuple[0], rawTuple[1] - 1, rawTuple[2], rawTuple[3], rawTuple[4], rawTuple[5], rawTuple[6]);
     let testDate = clazz.fromRaw(rawDate);
     expect(testDate.getTuple(shift)).toEqual(testTuple);

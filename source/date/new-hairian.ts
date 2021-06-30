@@ -7,12 +7,17 @@ import {
   FloorMath
 } from "../util/floor-math";
 import {
+  staticImplements
+} from "../util/static-implements";
+import {
   CustomDate,
+  CustomDateStatic,
   DateData,
   EPOCH_DATE
 } from "./custom";
 
 
+@staticImplements<CustomDateStatic<NewHairianDate>>()
 export class NewHairianDate extends CustomDate {
 
   private readonly unshiftedData: Readonly<DateData>;
@@ -55,16 +60,16 @@ export class NewHairianDate extends CustomDate {
     return time;
   }
 
-  public static of(year: number, month: number, day: number, hours: number = 0, minutes: number = 0, seconds: number = 0, milliseconds: number = 0): NewHairianDate {
+  public static of(year: number, month: number, day: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): NewHairianDate {
     let addedYear = year + 1500;
     let hairia = (addedYear - 1) * 365 + FloorMath.div(addedYear - 1, 4) - FloorMath.div(addedYear - 1, 100) + FloorMath.div(addedYear - 1, 400) + (month - 1) * 33 + day - 547863;
     let date = NewHairianDate.ofHairia(hairia, hours, minutes, seconds, milliseconds);
     return date;
   }
 
-  public static ofHairia(hairia: number, hours: number = 0, minutes: number = 0, seconds: number = 0, milliseconds: number = 0): NewHairianDate {
+  public static ofHairia(hairia: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): NewHairianDate {
     let timeOfDay = EPOCH_DATE.getTime() + (hairia - 1) * 86400000;
-    let timeInDay = (hours * 10000000 + minutes * 100000 + seconds * 1000 + milliseconds) * 864 / 1000;
+    let timeInDay = ((hours ?? 0) * 10000000 + (minutes ?? 0) * 100000 + (seconds ?? 0) * 1000 + (milliseconds ?? 0)) * 864 / 1000;
     let time = timeOfDay + timeInDay;
     let date = NewHairianDate.fromTime(time);
     return date;
