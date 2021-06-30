@@ -29,27 +29,32 @@ export class NewHairianDate extends CustomDate {
     this.shiftedData = shiftedData;
   }
 
-  public static fromTime(time: number): NewHairianDate {
+  private static create(hairia: number, millisecondCount: number): NewHairianDate {
     let calcData = function (shift: boolean): DateData {
-      let modifiedDate = (shift) ? new Date(time - 6 * 3600000) : new Date(time);
-      let dayCount = FloorMath.div(modifiedDate.getTime() - EPOCH_DATE.getTime(), 86400000) + 547863;
-      let secondCount = Math.floor((modifiedDate.getTime() - DateUtils.getBasis(modifiedDate).getTime()) * 1000 / 864) + ((shift) ? 25000000 : 0);
+      let dayCount = hairia + 547862 - ((shift && millisecondCount < 6 * 3600000 * 1000 / 864) ? 1 : 0);
       let rawYear = FloorMath.div(dayCount * 4 + FloorMath.div((FloorMath.div((dayCount + 1) * 4, 146097) + 1) * 3, 4) * 4 + 3, 1461);
       let rawDay = dayCount - (rawYear * 365 + FloorMath.div(rawYear, 4) - FloorMath.div(rawYear, 100) + FloorMath.div(rawYear, 400));
       let year = rawYear - 1500 + 1;
       let month = FloorMath.div(rawDay, 33) + 1;
       let day = FloorMath.mod(rawDay, 33) + 1;
-      let hairia = dayCount - 547862;
-      let hours = FloorMath.div(secondCount, 10000000);
-      let minutes = FloorMath.div(FloorMath.mod(secondCount, 10000000), 100000);
-      let seconds = FloorMath.div(FloorMath.mod(secondCount, 100000), 1000);
-      let milliseconds = FloorMath.mod(secondCount, 1000);
+      let hours = FloorMath.div(millisecondCount, 10000000) + ((shift && millisecondCount < 6 * 3600000 * 1000 / 864) ? 10 : 0);
+      let minutes = FloorMath.div(FloorMath.mod(millisecondCount, 10000000), 100000);
+      let seconds = FloorMath.div(FloorMath.mod(millisecondCount, 100000), 1000);
+      let milliseconds = FloorMath.mod(millisecondCount, 1000);
       let data = {year, month, day, hairia, hours, minutes, seconds, milliseconds};
       return data;
     };
     let unshiftedData = calcData(false);
     let shiftedData = calcData(true);
     let date = new NewHairianDate(unshiftedData, shiftedData);
+    return date;
+  }
+
+  public static fromTime(time: number): NewHairianDate {
+    let rawDate = new Date(time);
+    let hairia = FloorMath.div(rawDate.getTime() - EPOCH_DATE.getTime(), 86400000) + 1;
+    let millisecondCount = Math.floor((rawDate.getTime() - DateUtils.getBasis(rawDate).getTime()) * 1000 / 864);
+    let date = NewHairianDate.create(hairia, millisecondCount);
     return date;
   }
 
@@ -68,10 +73,8 @@ export class NewHairianDate extends CustomDate {
   }
 
   public static ofHairia(hairia: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): NewHairianDate {
-    let timeOfDay = EPOCH_DATE.getTime() + (hairia - 1) * 86400000;
-    let timeInDay = ((hours ?? 0) * 10000000 + (minutes ?? 0) * 100000 + (seconds ?? 0) * 1000 + (milliseconds ?? 0)) * 864 / 1000;
-    let time = timeOfDay + timeInDay;
-    let date = NewHairianDate.fromTime(time);
+    let millisecondCount = (hours ?? 0) * 10000000 + (minutes ?? 0) * 100000 + (seconds ?? 0) * 1000 + (milliseconds ?? 0);
+    let date = NewHairianDate.create(hairia, millisecondCount);
     return date;
   }
 
