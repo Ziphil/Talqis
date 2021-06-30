@@ -31,7 +31,8 @@ export class NewHairianDate extends CustomDate {
 
   private static create(hairia: number, millisecondCount: number): NewHairianDate {
     let calcData = function (shift: boolean): DateData {
-      let dayCount = hairia + 547862 - ((shift && millisecondCount < 6 * 3600000 * 1000 / 864) ? 1 : 0);
+      let modifiedHairia = hairia - ((shift && millisecondCount < 6 * 3600000 * 1000 / 864) ? 1 : 0);
+      let dayCount = modifiedHairia + 547862;
       let rawYear = FloorMath.div(dayCount * 4 + FloorMath.div((FloorMath.div((dayCount + 1) * 4, 146097) + 1) * 3, 4) * 4 + 3, 1461);
       let rawDay = dayCount - (rawYear * 365 + FloorMath.div(rawYear, 4) - FloorMath.div(rawYear, 100) + FloorMath.div(rawYear, 400));
       let year = rawYear - 1500 + 1;
@@ -41,7 +42,7 @@ export class NewHairianDate extends CustomDate {
       let minutes = FloorMath.div(FloorMath.mod(millisecondCount, 10000000), 100000);
       let seconds = FloorMath.div(FloorMath.mod(millisecondCount, 100000), 1000);
       let milliseconds = FloorMath.mod(millisecondCount, 1000);
-      let data = {year, month, day, hairia, hours, minutes, seconds, milliseconds};
+      let data = {year, month, day, hours, minutes, seconds, milliseconds, hairia: modifiedHairia};
       return data;
     };
     let unshiftedData = calcData(false);
