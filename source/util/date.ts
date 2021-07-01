@@ -9,4 +9,8 @@ export class DateUtils {
     return baseDate;
   }
 
+  public static difference(firstDate: Date, secondDate: Date): number {
+    return firstDate.getTime() - secondDate.getTime();
+  }
+
 }
