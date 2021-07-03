@@ -9,8 +9,8 @@ export abstract class CustomDate {
     return date;
   }
 
-  public static fromHairia<D extends CustomDate>(this: CustomDateStatic<D>, hairia: number, millisecondsInDay: number): D {
-    let time = EPOCH_DATE.getTime() + (hairia - 1) * 86400000 + millisecondsInDay;
+  public static fromHairia<D extends CustomDate>(this: CustomDateStatic<D>, hairia: number, timeInDay: number): D {
+    let time = EPOCH_DATE.getTime() + (hairia - 1) * 86400000 + timeInDay;
     let date = this.fromTime(time);
     return date;
   }
@@ -28,11 +28,11 @@ export abstract class CustomDate {
     return date;
   }
 
-  // UNIX 元期からの経過時間 (ミリ秒単位) を返します。
+  // UNIX 元期からの経過時間 (グレゴリオ暦ミリ秒単位) を返します。
   public abstract toTime(): number;
 
   // 地方時に基づいて、年を表す数を返します。
-  // グレゴリオ暦を表す日付オブジェクトに対してこのメソッドが呼ばれた場合、返される値は完全な年数であり、(1900 を減じるなどして) 2 桁にしたものではありません。
+  // グレゴリオ暦を表す日付オブジェクトに対してこのメソッドが呼ばれた場合、返される値は完全な年数であり、1900 を減じるなどして 2 桁にしたものではありません。
   // 日付が紀元前である場合、紀元前 1 年 (紀元後 1 年の前年) に対しては 0 を返し、紀元前 2 年 (紀元後 1 年の 2 年前) に対しては -1 を返します。
   public abstract getYear(shift?: boolean): number;
 
@@ -66,19 +66,19 @@ export abstract class CustomDate {
 
 export interface CustomDateStatic<D extends CustomDate = CustomDate> {
 
-  // UNIX 元期からの経過時間 (ミリ秒単位) から時刻オブジェクトを生成します。
+  // UNIX 元期からの経過時間 (グレゴリオ暦ミリ秒単位) から時刻オブジェクトを生成します。
   fromTime(time: number): D;
 
   // JavaScript 標準の Date オブジェクトから時刻オブジェクトを生成します。
   fromRaw(rawDate: Date): D;
 
-  // 地方時に基づいて、ハイリア数およびその日の開始時刻からの経過時間 (ミリ秒単位) から時刻オブジェクトを生成します。
-  fromHairia(hairia: number, millisecondsInDay: number): D;
+  // 地方時に基づいて、ハイリア数およびそのハイリア数の日の 0 時 0 分 0 秒からの経過時間 (グレゴリオ暦ミリ秒単位) から時刻オブジェクトを生成します。
+  fromHairia(hairia: number, timeInDay: number): D;
 
-  // 地方時に基づいて、各暦における日付と時刻の値から時刻オブジェクトを生成します。
+  // 地方時に基づいて、該当の暦における日付と時刻の値から時刻オブジェクトを生成します。
   of(year: number, month: number, day: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): D;
 
-  // 地方時に基づいて、ハイリア数と各暦における時刻の値から時刻オブジェクトを生成します。
+  // 地方時に基づいて、ハイリア数および該当の暦における時刻の値から時刻オブジェクトを生成します。
   ofHairia(hairia: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number): D;
 
   // メソッドが呼び出された時点での現在の時刻を表す時刻オブジェクトを生成します。
