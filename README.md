@@ -5,7 +5,7 @@
 ![](https://img.shields.io/github/package-json/v/Ziphil/Talqis)
 ![](https://img.shields.io/github/commit-activity/y/Ziphil/Talqis?label=commits)
 ![](https://img.shields.io/github/workflow/status/Ziphil/Talqis/test?label=test)
-![](https://img.shields.io/codecov/c/github/Ziphil/Talqis)
+[![](https://img.shields.io/codecov/c/github/Ziphil/Talqis)](https://app.codecov.io/gh/Ziphil/Talqis)
 
 
 ## Overview
